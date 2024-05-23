@@ -22,8 +22,8 @@ logit2cs <- function(x) {
   return(y)
 }
 
-load("output/OLYM_inputs.RData")
- rm(det_data) # remove this to save space if you only need the modeled species ("mod_data")
+load("input/OLYM_inputs.RData")
+rm(det_data) # remove this to save space if you only need the modeled species ("mod_data")
 
 # TODO: missing code to resolve "needs review" samples. 
 verif_bind <- left_join(verif_data, mod_data, by=c("detection_id"="id", "project_id"="project_id", "project_name"="project_name")) %>% filter(common_name %in% spp_list)
@@ -62,7 +62,7 @@ unique(vath.v$verification_group_name)
 
 disagree <- vath.v %>% group_by(detection_id) %>% 
   summarise(nrev = n_distinct(user), disagree=sum(is_species_present)) %>% filter(disagree==1 & nrev==2) # 1 = if one of us said it was there and one of us said it wasn't
-vath.v %>% filter(detection_id %in% disagree$detection_id) %>% dplyr::select(detection_id, verification_group_name, user, is_species_present, needs_review, focal_sound_class, alternative_species_common_name, alternative_sound_class, common_name, confidence, comments) %>% arrange(detection_id) %>% View()
+#vath.v %>% filter(detection_id %in% disagree$detection_id) %>% dplyr::select(detection_id, verification_group_name, user, is_species_present, needs_review, focal_sound_class, alternative_species_common_name, alternative_sound_class, common_name, confidence, comments) %>% arrange(detection_id) %>% View()
 # not sure how to code this resolution. for now, going to filter out everything marked "needs review" because there is a corresponding ID by the second reviewer, and for the ones that disagree, we want to keep the second reviewer's ID.
 vath <- vath.v %>% filter(needs_review==0)
 
@@ -70,14 +70,14 @@ vath <- vath.v %>% filter(needs_review==0)
 towa.v <- verif_bind %>% filter(common_name=="Townsend's Warbler")
 
 unique(towa.v$user) # if more than 1, review discrepancies. rule of thumb should be that second reviewer's ID replaces first reviewer's ID where there are discrepancies
-towa.v %>% group_by(detection_id) %>% summarise(nrev = n()) %>% filter(nrev>1) %>% View()
+#towa.v %>% group_by(detection_id) %>% summarise(nrev = n()) %>% filter(nrev>1) %>% View()
 towa <- towa.v # no needs review
 
 ### BROWN CREEPER
 brcr.v <- verif_bind %>% filter(common_name=="Brown Creeper")
 
 unique(brcr.v$user) # if more than 1, review discrepancies. rule of thumb should be that second reviewer's ID replaces first reviewer's ID where there are discrepancies
-brcr.v %>% group_by(detection_id) %>% summarise(nrev = n()) %>% filter(nrev>1) %>% View()
+#brcr.v %>% group_by(detection_id) %>% summarise(nrev = n()) %>% filter(nrev>1) %>% View()
 brcr <- brcr.v
 
 ### WESTERN FLYCATCHER (psfl)
@@ -91,8 +91,8 @@ psfl <- psfl.v
 ### HAMMOND'S FLYCATCHER
 hafl.v <- verif_bind %>% filter(common_name=="Hammond's Flycatcher")
 
-unique(hafl.v$user) # if more than 1, review discrepancies. rule of thumb should be that second reviewer's ID replaces first reviewer's ID where there are discrepancies
-hafl.v %>% group_by(detection_id) %>% summarise(nrev = n()) %>% filter(nrev>1) %>% View()
+#unique(hafl.v$user) # if more than 1, review discrepancies. rule of thumb should be that second reviewer's ID replaces first reviewer's ID where there are discrepancies
+#hafl.v %>% group_by(detection_id) %>% summarise(nrev = n()) %>% filter(nrev>1) %>% View()
 hafl <- hafl.v
 
 ### DARK-EYED JUNCO
@@ -106,11 +106,11 @@ deju <- deju.v
 heth.v <- verif_bind %>% filter(common_name=="Hermit Thrush" & verification_group_name != "OLY AMRO HETH REVIEW")
 
 unique(heth.v$user) # if more than 1, review discrepancies. rule of thumb should be that second reviewer's ID replaces first reviewer's ID where there are discrepancies
-heth.v %>% group_by(detection_id) %>% summarise(nrev = n()) %>% filter(nrev>1) %>% View()
+#heth.v %>% group_by(detection_id) %>% summarise(nrev = n()) %>% filter(nrev>1) %>% View()
 
 disagree <- heth.v %>% group_by(detection_id) %>% 
   summarise(nrev = n_distinct(user), disagree=sum(is_species_present)) %>% filter(disagree==1 & nrev==2) # 1 = if one of us said it was there and one of us said it wasn't
-heth.v %>% filter(detection_id %in% disagree$detection_id) %>% dplyr::select(detection_id, verification_group_name, user, is_species_present, needs_review, focal_sound_class, alternative_species_common_name, alternative_sound_class, common_name, confidence, comments) %>% arrange(detection_id) %>% View()
+#heth.v %>% filter(detection_id %in% disagree$detection_id) %>% dplyr::select(detection_id, verification_group_name, user, is_species_present, needs_review, focal_sound_class, alternative_species_common_name, alternative_sound_class, common_name, confidence, comments) %>% arrange(detection_id) %>% View()
 # not sure how to code this resolution. for now, going to filter out everything marked "needs review" because there is a corresponding ID by the second reviewer, and for the ones that disagree, we want to keep the second reviewer's ID.
 heth <- heth.v %>% filter(needs_review==0)
 
@@ -118,7 +118,7 @@ heth <- heth.v %>% filter(needs_review==0)
 evgr.v <- verif_bind %>% filter(common_name=="Evening Grosbeak")
 
 unique(evgr.v$user) # if more than 1, review discrepancies. rule of thumb should be that second reviewer's ID replaces first reviewer's ID where there are discrepancies
-evgr.v %>% group_by(detection_id) %>% summarise(nrev = n()) %>% filter(nrev>1) %>% View()
+#evgr.v %>% group_by(detection_id) %>% summarise(nrev = n()) %>% filter(nrev>1) %>% View()
 evgr.v %>% filter(needs_review==1) # i remember verifying these
 evgr <- evgr.v %>% filter(needs_review==0)
 
@@ -127,12 +127,12 @@ evgr <- evgr.v %>% filter(needs_review==0)
 osfl.v <- verif_bind %>% filter(common_name=="Olive-sided Flycatcher", user != "mclapp@birdpop.org")
 
 unique(osfl.v$user) # if more than 1, review discrepancies. rule of thumb should be that second reviewer's ID replaces first reviewer's ID where there are discrepancies
-osfl.v %>% group_by(detection_id) %>% summarise(nrev = n()) %>% filter(nrev>1) %>% View()
+#osfl.v %>% group_by(detection_id) %>% summarise(nrev = n()) %>% filter(nrev>1) %>% View()
 osfl.v %>% filter(needs_review==1) 
 
 disagree <- osfl.v %>% group_by(detection_id) %>% 
   summarise(nrev = n_distinct(user), disagree=sum(is_species_present)) %>% filter(disagree==1 & nrev==2) # 1 = if one of us said it was there and one of us said it wasn't
-osfl.v %>% filter(detection_id %in% disagree$detection_id) %>% dplyr::select(detection_id, verification_group_name, user, is_species_present, needs_review, focal_sound_class, alternative_species_common_name, alternative_sound_class, common_name, confidence, comments) %>% arrange(detection_id) %>% View()
+#osfl.v %>% filter(detection_id %in% disagree$detection_id) %>% dplyr::select(detection_id, verification_group_name, user, is_species_present, needs_review, focal_sound_class, alternative_species_common_name, alternative_sound_class, common_name, confidence, comments) %>% arrange(detection_id) %>% View()
 # not sure how to code this resolution. for now, going to filter out everything marked "needs review" because there is a corresponding ID by the second reviewer, and for the ones that disagree, we want to keep the second reviewer's ID.
 osfl <- osfl.v %>% filter(needs_review!=1)
 
@@ -210,3 +210,28 @@ ggplot(data=heth, mapping=aes(confidence, is_species_present)) +
   scale_color_manual(values = c("darkred", "skyblue")) +
   labs(color="species present?")
 
+# specificiity ~= precision
+# sensitivity ~= recall
+
+colnames(mod_data)
+mod_data$logit <- qlogis(mod_data$confidence)
+allheth <- mod_data %>% filter(common_name=="Hermit Thrush")
+hist(allheth$logit,breaks=100)
+hist(allheth$logit[allheth$logit>0.277], breaks=100)
+# 95% HETH = 0.277
+
+head(thresholds)
+
+towa11 <- towa[towa$is_species_present==1,]
+towa01 <- towa[towa$is_species_present==0,]
+ggplot() +
+  geom_histogram(data= towa11, aes(logit), fill="blue", alpha=0.5) +
+  geom_histogram(data=towa01, aes(logit), fill="darkred", alpha=0.8)
+
+truepos <- verif_bind[verif_bind$is_species_present==1,]
+falsepos <- verif_bind[verif_bind$is_species_present==0,]
+
+ggplot() +
+  geom_histogram(data= truepos, aes(logit), fill="blue", alpha=0.5) +
+  geom_histogram(data=falsepos, aes(logit), fill="darkred", alpha=0.8) + 
+  facet_wrap(~common_name)
