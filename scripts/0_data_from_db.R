@@ -9,6 +9,7 @@ library(DBI)
 library(RSQLite)
 library(tidyverse)
 library(ggpubr)
+library(readxl)
 
 
 # Sampling effort data ----------------------------------------------------
@@ -77,10 +78,12 @@ dbDisconnect(mydb)
 
 # Spatial Metadata --------------------------------------------------------
 
+# many more locations than the ones we have
+# we do not have lat-long for data sharing reasons but do have a shapefile of hexes. each location is 1 replicate station out of 5 within the hex.
+elev_data <- read_excel("input/IBP_OLYM_2021_Metadata.xlsx") %>% mutate(location=paste(Hexagon_ID, Station, sep="-"))
 
-loc_data <- read_csv("input/OLYM_coords_UTM_latlong.csv")
-
-head(loc_data)
+unique(elev_data$location)
+head(elev_data)
 
 
 # subsample to verified species -------------------------------------------
