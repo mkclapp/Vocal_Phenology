@@ -40,14 +40,14 @@ verif_bind$logit <- cs2logit(verif_bind$confidence)
 ### AMERICAN ROBIN
 amro.v <- verif_bind %>% filter(common_name=="American Robin" & verification_group_name != "OLY AMRO HETH REVIEW")
 unique(amro.v$user) # if more than 1, review discrepancies. rule of thumb should be that second reviewer's ID replaces first reviewer's ID where there are discrepancies
-amro.v %>% group_by(detection_id) %>% summarise(nrev = n()) %>% filter(nrev>1) %>% View()
+#amro.v %>% group_by(detection_id) %>% summarise(nrev = n()) %>% filter(nrev>1) %>% View()
 unique(amro.v$verification_group_name)
 
-amro.v %>% filter(needs_review==1) %>% dplyr::select(detection_id, verification_group_name, user, is_species_present, needs_review, focal_sound_class, alternative_species_common_name, alternative_sound_class, common_name, confidence, comments) %>% View()
+#amro.v %>% filter(needs_review==1) %>% dplyr::select(detection_id, verification_group_name, user, is_species_present, needs_review, focal_sound_class, alternative_species_common_name, alternative_sound_class, common_name, confidence, comments) %>% View()
 
 disagree <- amro.v %>% group_by(detection_id) %>% 
   summarise(nrev = n_distinct(user), disagree=sum(is_species_present)) %>% filter(disagree==1 & nrev==2) # 1 = if one of us said it was there and one of us said it wasn't
-amro.v %>% filter(detection_id %in% disagree$detection_id) %>% dplyr::select(detection_id, verification_group_name, user, is_species_present, needs_review, focal_sound_class, alternative_species_common_name, alternative_sound_class, common_name, confidence, comments) %>% arrange(detection_id) %>% View()
+#amro.v %>% filter(detection_id %in% disagree$detection_id) %>% dplyr::select(detection_id, verification_group_name, user, is_species_present, needs_review, focal_sound_class, alternative_species_common_name, alternative_sound_class, common_name, confidence, comments) %>% arrange(detection_id) %>% View()
 # not sure how to code this resolution. for now, going to filter out everything marked "needs review" because there is a corresponding ID by the second reviewer, and for the ones that disagree, we want to keep the second reviewer's ID.
 amro <- amro.v %>% filter(needs_review==0)
 
@@ -55,7 +55,7 @@ amro <- amro.v %>% filter(needs_review==0)
 vath.v <- verif_bind %>% filter(common_name=="Varied Thrush", user != "mclapp@birdpop.org")
 
 unique(vath.v$user) # if more than 1, review discrepancies. rule of thumb should be that second reviewer's ID replaces first reviewer's ID where there are discrepancies
-vath.v %>% group_by(detection_id) %>% summarise(nrev = n()) %>% filter(nrev>1) %>% View()
+#vath.v %>% group_by(detection_id) %>% summarise(nrev = n()) %>% filter(nrev>1) %>% View()
 unique(vath.v$verification_group_name)
 
 #vath.v %>% filter(needs_review==1) %>% dplyr::select(detection_id, verification_group_name, user, is_species_present, needs_review, focal_sound_class, alternative_species_common_name, alternative_sound_class, common_name, confidence, comments) %>% View()
@@ -136,6 +136,51 @@ disagree <- osfl.v %>% group_by(detection_id) %>%
 # not sure how to code this resolution. for now, going to filter out everything marked "needs review" because there is a corresponding ID by the second reviewer, and for the ones that disagree, we want to keep the second reviewer's ID.
 osfl <- osfl.v %>% filter(needs_review!=1)
 
+### PACIFIC WREN
+
+pawr.v <- verif_bind %>% filter(common_name=="Pacific Wren")
+
+unique(pawr.v$user) # if more than 1, review discrepancies. rule of thumb should be that second reviewer's ID replaces first reviewer's ID where there are discrepancies
+#osfl.v %>% group_by(detection_id) %>% summarise(nrev = n()) %>% filter(nrev>1) %>% View()
+pawr.v %>% filter(needs_review==1) 
+
+pawr <- pawr.v %>% filter(needs_review!=1)
+
+### CBCH
+
+
+cbch.v <- verif_bind %>% filter(common_name=="Chestnut-backed Chickadee")
+
+unique(cbch.v$user) # if more than 1, review discrepancies. rule of thumb should be that second reviewer's ID replaces first reviewer's ID where there are discrepancies
+#osfl.v %>% group_by(detection_id) %>% summarise(nrev = n()) %>% filter(nrev>1) %>% View()
+cbch.v %>% filter(needs_review==1) 
+
+cbch <- cbch.v %>% filter(needs_review!=1)
+
+
+### RECR
+
+recr.v <- verif_bind %>% filter(common_name=="Red Crossbill")
+
+unique(recr.v$user) # if more than 1, review discrepancies. rule of thumb should be that second reviewer's ID replaces first reviewer's ID where there are discrepancies
+#osfl.v %>% group_by(detection_id) %>% summarise(nrev = n()) %>% filter(nrev>1) %>% View()
+recr.v %>% filter(needs_review==1) 
+recr <- recr.v
+
+
+weta.v <- verif_bind %>% filter(common_name=="Western Tanager", verification_group_name !="OLY BTPI WETA", user != "katiesmithlouise@gmail.com")
+
+unique(weta.v$user) # if more than 1, review discrepancies. rule of thumb should be that second reviewer's ID replaces first reviewer's ID where there are discrepancies
+weta.v %>% group_by(detection_id) %>% summarise(nrev = n()) %>% filter(nrev>1) %>% View()
+weta.v %>% filter(needs_review==1) 
+
+#disagree <- weta.v %>% group_by(detection_id) %>% 
+#  summarise(nrev = n_distinct(user), disagree=sum(is_species_present)) %>% filter(disagree==1 & nrev==2) # 1 = if one of us said it was there and one of us said it wasn't
+#weta.v %>% filter(detection_id %in% disagree$detection_id) %>% dplyr::select(detection_id, verification_group_name, user, is_species_present, needs_review, focal_sound_class, alternative_species_common_name, alternative_sound_class, common_name, confidence, comments) %>% arrange(detection_id) %>% View()
+# not sure how to code this resolution. for now, going to filter out everything marked "needs review" because there is a corresponding ID by the second reviewer, and for the ones that disagree, we want to keep the second reviewer's ID.
+weta <- weta.v 
+
+
 
 # MODEL precision ---------------------------------------------------------
 
@@ -151,6 +196,11 @@ summary(m_hafl <- glm(is_species_present ~ logit, data = hafl, family=binomial()
 summary(m_heth <- glm(is_species_present ~ logit, data = heth, family=binomial()))
 summary(m_osfl <- glm(is_species_present ~ logit, data = osfl, family=binomial()))
 summary(m_evgr <- glm(is_species_present ~ logit, data = evgr, family=binomial()))
+summary(m_pawr <- glm(is_species_present ~ logit, data = pawr, family=binomial()))
+summary(m_cbch <- glm(is_species_present ~ logit, data = cbch, family=binomial()))
+summary(m_recr <- glm(is_species_present ~ logit, data = recr, family=binomial()))
+summary(m_weta <- glm(is_species_present ~ logit, data = weta, family=binomial()))
+
 solvefor <- function(p, mod) {
   logodds = (log(p/(1-p)) - coef(mod)[1])/coef(mod)[2]
   Cscore = logit2cs(logodds)
@@ -169,6 +219,10 @@ thresholds$hafl <- solvefor(p = thresholds$threshold, mod=m_hafl)
 thresholds$heth <- solvefor(p = thresholds$threshold, mod=m_heth)
 thresholds$osfl <- solvefor(p = thresholds$threshold, mod=m_osfl)
 thresholds$evgr <- solvefor(p = thresholds$threshold, mod=m_evgr)
+thresholds$pawr <- solvefor(p = thresholds$threshold, mod=m_pawr)
+thresholds$cbch <- solvefor(p = thresholds$threshold, mod=m_cbch)
+thresholds$recr <- solvefor(p = thresholds$threshold, mod=m_recr)
+thresholds$weta <- solvefor(p = thresholds$threshold, mod=m_weta)
 
 write_csv(thresholds, "./output/precision_thresholds.csv")
 
